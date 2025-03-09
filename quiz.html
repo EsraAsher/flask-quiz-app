@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+            text-align: left;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .question {
+            background-color: red;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        .option {
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            background-color: white;
+        }
+        .option:hover {
+            background-color: #ddd;
+        }
+        .option input {
+            display: none;
+        }
+        .option.selected {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .correct-answer {
+            color: green;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            display: block;
+            width: 100%;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: purple;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Quiz</h1>
+    <form method="post">
+        {% if submitted %}
+            <h2>Mistakes You Made:</h2>
+            {% for i, q in questions %}
+                {% if user_answers[i] != q.answer %}
+                    <p class="question">{{ q.question }}</p>
+                    <p class="correct-answer">✅ Correct Answer: {{ q.answer }}</p>
+                {% endif %}
+            {% endfor %}
+            <p class="message">You did great my baby, I love you ❤️</p>
+        {% else %}
+            {% for i, q in questions %}
+                <p class="question">{{ q.question }}</p>
+                {% for option in q.options %}
+                    <label class="option">
+                        <input type="radio" name="{{ i }}" value="{{ option }}" 
+                            {% if user_answers and user_answers[i] == option %}checked{% endif %}
+                            onclick="selectOption(this)">
+                        {{ option }}
+                    </label>
+                {% endfor %}
+            {% endfor %}
+            <button type="submit">Submit</button>
+        {% endif %}
+    </form>
+</div>
+
+<script>
+    function selectOption(radio) {
+        let options = radio.closest('.container').querySelectorAll(`[name="${radio.name}"]`);
+        options.forEach(opt => opt.closest('.option').classList.remove('selected'));
+        radio.closest('.option').classList.add('selected');
+    }
+</script>
+
+</body>
+</html>
